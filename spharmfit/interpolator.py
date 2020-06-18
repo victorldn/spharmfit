@@ -15,6 +15,8 @@ def main():
     FNAME = '10492_Bowling Pin_v1_max2011_iteration-2.obj'
     mesh = loadMesh(fname=ROOT+FNAME)
     mesh_xyz = mesh.vertices.T
+    m_norm = np.average(np.linalg.norm(mesh_xyz, axis=0))
+    mesh_xyz /= m_norm
 
     norms, stdd = project(mesh_xyz)
     obs = mk_obsrv(stdd,  norms)
@@ -26,16 +28,13 @@ def main():
     interpolator = Interpolator(obs, r=1.0)
     interpolated = interpolator(coords)
 
-    theta = coords[:, 0] + np.pi
-    phi   = coords[:, 1]
-
-    SHFit.theta = theta.copy()
-    SHFit.phi = phi.copy()
+    SHFit.theta = coords[:, 0] + np.pi
+    SHFit.phi = coords[:, 1]
     SHFit.xyz = xyz.copy()
 
     coefficients = []
 
-    for n in range(4):
+    for n in range(30):
         for l in range(-n, n+1):
             sph_harm_pts = make_harmonic(m=l, n=n,
                                          theta=SHFit.theta, phi=SHFit.phi)
@@ -55,7 +54,8 @@ def main():
 
     from mpl_toolkits.mplot3d import Axes3D
     fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
+    ax1 = fig.add_subplot(121, projection='3d')
+    ax2 = fig.add_subplot(122, projection='3d')
 
     #new_pts = xyz * (np.real(sph_harm_pts)**2)[:,None]
     #new_pts = norms * stdd
@@ -65,9 +65,8 @@ def main():
        new_pts += c.reconstructed
     #print(new_pts)
 
-
-    ax.scatter(*new_pts.T)
-    #ax.scatter(*mesh_xyz, alpha=0.2)
+    ax1.scatter(*new_pts.T)
+    ax2.scatter(*(xyz*interpolated[:,2][:,None]).T, alpha=0.2)
     plt.show()
 
 
