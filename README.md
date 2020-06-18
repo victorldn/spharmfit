@@ -10,3 +10,11 @@ It is reliant on the following Python packages:
 * [`pyglet`](https://pypi.org/project/pyglet/) - Cross-platform windowing and multimedia library
 * [`quadpy`](https://pypi.org/project/quadpy/) - Numerical integration, quadrature for various domains
 * [`sknni`](https://pypi.org/project/sknni/) - spherical k-nearest neighbors interpolation and is a geospatial interpolator
+
+## Integration scheme:
+
+The surface integral of a function over the unit sphere,
+
+\begin{equation}
+  [I] = \int d\Omega f(\Omega) = \int_0^{\pi} sin(\omega) \int_0^{2\pi}
+\end{equation}
